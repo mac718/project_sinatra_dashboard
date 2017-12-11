@@ -3,7 +3,6 @@
 class Locator
   def initialize(ip)
     @ip = ip
-    binding.pry
   end
 
   def get_zip

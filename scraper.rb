@@ -4,6 +4,7 @@ require 'bundler/setup'
 require 'pry'
 require 'csv'
 require_relative 'results_saver'
+require_relative 'locator.rb'
 
 class Scraper
 
@@ -14,7 +15,8 @@ class Scraper
           agent.user_agent_alias = "Linux Firefox"}
     @scraper.history_added = Proc.new { sleep 0.5 }
     @result_saver = ResultsSaver.new
-    @search_terms = search_terms.split(' ').join('+OR+')
+    @locator = Locator.new("76.226.248.30")
+    @search_terms = search_terms.split(' ').join('+')
     @location = location
   end
 
@@ -38,6 +40,7 @@ class Scraper
     @page = @scraper.get("https://www.dice.com/jobs?q=#{@search_terms}&l=#{@location}&startPage=#{@page_number}")
     @job_details_divs = @page.search('.complete-serp-result-div')
     until @job_details_divs.empty?
+      binding.pry
       @result_saver.save_results(organize_data)
       @page_number += 1
       @page = @scraper.get("https://www.dice.com/jobs?q=#{@search_terms}&l=#{@location}&startPage=#{@page_number}")
